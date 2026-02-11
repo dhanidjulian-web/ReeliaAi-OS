@@ -2,85 +2,102 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ReeliaAI / GoMu-OS Frontend</title>
+  <title>GoMu-OS / ReeliaAI</title>
   <script src="https://js.puter.com/v2/"></script>
   <style>
-    /* === GLOBAL RESET === */
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:Segoe UI,Tahoma,sans-serif;background:#0f0c29;color:#fff;height:100vh;overflow:hidden}
-    .container{display:flex;flex-direction:column;height:100vh}/* === HEADER & TABS === */
-.header{padding:20px;background:#141428;border-bottom:1px solid #333}
-.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-.logo{font-size:22px;font-weight:700;color:#7aa2ff}
+    .container{display:flex;flex-direction:column;height:100vh}/* HEADER */
+.header{padding:16px;background:#141428;border-bottom:1px solid #333}
+.logo{font-size:22px;font-weight:700;color:#7aa2ff;margin-bottom:12px}
 .tab-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.tab-button{padding:12px;background:#1e1e3f;border:1px solid #333;border-radius:8px;cursor:pointer;text-align:center}
+.tab-button{padding:12px;background:#1e1e3f;border:1px solid #333;border-radius:10px;cursor:pointer;text-align:center}
 .tab-button.active{background:#667eea}
 
-/* === CONTENT === */
+/* CONTENT */
 .main-content{flex:1;overflow:hidden}
 .tab-content{display:none;height:100%}
 .tab-content.active{display:flex;flex-direction:column}
 
-/* === CHAT === */
-.chat-container{flex:1;padding:20px;overflow-y:auto}
-.message{margin-bottom:10px;padding:10px 14px;border-radius:8px;max-width:70%}
+/* MODEL BAR */
+.model-bar{display:flex;gap:8px;padding:10px;border-bottom:1px solid #333;background:#141428;flex-wrap:wrap}
+.model-bar select{background:#1e1e3f;color:#fff;border:1px solid #333;border-radius:8px;padding:8px}
+
+/* CHAT */
+.chat-container{flex:1;padding:16px;overflow-y:auto}
+.message{margin-bottom:10px;padding:12px 16px;border-radius:10px;max-width:85%;word-wrap:break-word}
 .message.user{background:#667eea;align-self:flex-end}
 .message.ai{background:#2c2c55;align-self:flex-start}
 
-.input-area{padding:15px;border-top:1px solid #333;display:flex;gap:10px}
-textarea{flex:1;padding:10px;border-radius:6px;border:1px solid #444;background:#1e1e3f;color:#fff}
-button{padding:10px 16px;border:none;border-radius:6px;background:#667eea;color:#fff;cursor:pointer}
+.input-area{padding:12px;border-top:1px solid #333;display:flex;gap:8px;align-items:center}
+textarea{flex:1;min-height:80px;max-height:160px;resize:vertical;padding:12px;border-radius:8px;border:1px solid #444;background:#1e1e3f;color:#fff;font-size:15px}
+button{padding:12px 16px;border:none;border-radius:8px;background:#667eea;color:#fff;cursor:pointer}
 
-/* === API MANAGER === */
-.api-manager{padding:30px;overflow:auto}
-.api-section{background:#1e1e3f;padding:20px;border-radius:10px;margin-bottom:20px}
+/* API */
+.api-manager{padding:20px;overflow:auto}
+.api-section{background:#1e1e3f;padding:20px;border-radius:12px;margin-bottom:20px}
 .key-item{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-.key-value{font-family:monospace;background:#000;padding:6px 10px;border-radius:4px}
+.key-value{font-family:monospace;background:#000;padding:6px 10px;border-radius:6px;word-break:break-all}
 
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="header-top">
-      <div class="logo">GoMu-OS / ReeliaAI</div>
-    </div>
+<div class="container">  <div class="header">
+    <div class="logo">GoMu-OS / ReeliaAI</div>
     <div class="tab-grid">
       <div class="tab-button active" data-tab="chat">Chat</div>
       <div class="tab-button" data-tab="generator">Generator</div>
       <div class="tab-button" data-tab="analysis">Analysis</div>
       <div class="tab-button" data-tab="api">API Manager</div>
     </div>
-  </div>  <div class="main-content">
-    <div id="chat" class="tab-content active">
-      <div id="chatContainer" class="chat-container"></div>
-      <div class="input-area">
-        <input type="file" id="fileInput" multiple style="display:none" />
-        <button onclick="document.getElementById('fileInput').click()">📎</button>
-        <select id="modelSelect">
-          <option value="gpt-4o-mini">GPT‑4o Mini</option>
-          <option value="gpt-4.1-nano">GPT‑4.1 Nano</option>
-          <option value="claude-sonnet-3.7">Claude Sonnet 3.7</option>
-          <option value="gemini-flash">Gemini Flash</option>
-        </select>
-        <textarea id="chatInput" placeholder="Type message..."></textarea>
-        <button id="sendBtn">Send</button>
-      </div>
-    </div><div id="generator" class="tab-content"><div style="padding:30px">Generator ready</div></div>
-<div id="analysis" class="tab-content"><div style="padding:30px">Analysis ready</div></div>
+  </div>  <div class="main-content"><!-- CHAT TAB -->
+<div id="chat" class="tab-content active">
+  <div class="model-bar">
+    <select id="modelSelect">
+      <option value="gpt-4o-mini">GPT‑4o Mini</option>
+      <option value="gpt-4.1-nano">GPT‑4.1 Nano</option>
+      <option value="claude-sonnet-3.7">Claude Sonnet 3.7</option>
+      <option value="gemini-flash">Gemini Flash</option>
+      <option value="grok-beta">Grok</option>
+      <option value="deepseek-chat">DeepSeek</option>
+      <option value="qwen-turbo">Qwen</option>
+      <option value="mistral-small">Mistral</option>
+    </select>
+  </div>
 
+  <div id="chatContainer" class="chat-container"></div>
+
+  <div class="input-area">
+    <input type="file" id="fileInput" multiple style="display:none" />
+    <button id="attachBtn">📎</button>
+    <textarea id="chatInput" placeholder="Type message..."></textarea>
+    <button id="sendBtn">Send</button>
+  </div>
+</div>
+
+<!-- GENERATOR TAB -->
+<div id="generator" class="tab-content">
+  <div style="padding:30px">Generator tab ready (AI text / image / code can be added here)</div>
+</div>
+
+<!-- ANALYSIS TAB -->
+<div id="analysis" class="tab-content">
+  <div style="padding:30px">Analysis tab ready</div>
+</div>
+
+<!-- API TAB -->
 <div id="api" class="tab-content">
   <div class="api-manager">
     <div class="api-section">
       <h3>Generate API Key</h3>
-      <select id="apiPlatform" style="width:100%;margin-bottom:8px">
+      <select id="apiPlatform" style="width:100%;margin:10px 0">
         <option value="openai">OpenAI</option>
         <option value="anthropic">Anthropic</option>
         <option value="google">Google Gemini</option>
         <option value="openrouter">OpenRouter</option>
-      </select></h3>
-      <input id="apiKeyName" placeholder="Key name" style="width:100%;padding:8px;margin:10px 0" />
-      <button id="genKeyBtn">Generate</button>
+      </select>
+      <input id="apiKeyName" placeholder="Key name" style="width:100%;padding:10px" />
+      <button id="genKeyBtn" style="margin-top:10px">Generate</button>
     </div>
     <div class="api-section">
       <h3>Active Keys</h3>
@@ -91,164 +108,65 @@ button{padding:10px 16px;border:none;border-radius:6px;background:#667eea;color:
 
   </div>
 </div><script>
-/*************************************************
- GO MU-OS — FULLY LIVE FRONTEND (NO BACKEND)
- Uses Puter.js AI for ALL FEATURES
- Tested logic: Chat, Generator, TTS, Code, API Key
-*************************************************/
-
-/* ========== TAB SYSTEM ========== */
-document.querySelectorAll('.tab-button').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+/* TAB SYSTEM */
+document.querySelectorAll('.tab-button').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
   };
 });
 
-/* ========== CHAT (REAL AI) ========== */
-const chatContainer = document.getElementById('chatContainer');
-const sendBtn = document.getElementById('sendBtn');
+/* CHAT */
+const chatContainer=document.getElementById('chatContainer');
+let uploadedFiles=[];
 
-sendBtn.onclick = async () => {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  const model = document.getElementById('modelSelect').value;
-  if (!text && uploadedFiles.length === 0) return;
+document.getElementById('attachBtn').onclick=()=>document.getElementById('fileInput').click();
+document.getElementById('fileInput').onchange=e=>uploadedFiles=[...e.target.files];
 
-  addMsg(text || '📎 File sent', 'user');
-  input.value = '';
+document.getElementById('sendBtn').onclick=async()=>{
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim();
+  const model=document.getElementById('modelSelect').value;
+  if(!text && uploadedFiles.length===0) return;
 
-  const aiMsg = addMsg('⏳ thinking...', 'ai');
+  addMsg(text||'📎 File sent','user');
+  input.value='';
+  const aiMsg=addMsg('⏳ thinking...','ai');
 
-  try {
-    const messages = [{ role: 'system', content: 'You are GoMu-OS 2in1 live assistant.' }];
-    if (text) messages.push({ role: 'user', content: text });
-
-    if (uploadedFiles.length) {
-      for (const f of uploadedFiles) {
-        const content = await f.text().catch(()=> '[binary file]');
-        messages.push({ role: 'user', content: `File ${f.name}:
-${content}` });
-      }
-      uploadedFiles = [];
+  try{
+    const messages=[{role:'system',content:'You are GoMu-OS 2in1 live assistant.'}];
+    if(text) messages.push({role:'user',content:text});
+    for(const f of uploadedFiles){
+      const c=await f.text().catch(()=>"[binary file]");
+      messages.push({role:'user',content:`File ${f.name}:\n${c}`});
     }
-
-    const res = await puter.ai.chat({ model, messages });
-    aiMsg.textContent = res.message.content;
-  } catch (e) {
-    aiMsg.textContent = '❌ AI Error: ' + e.message;
-  }
+    uploadedFiles=[];
+    const res=await puter.ai.chat({model,messages});
+    aiMsg.textContent=res.message?.content || '[No response]';
+  }catch(e){aiMsg.textContent='❌ '+e.message}
 };
 
-let uploadedFiles = [];
-document.getElementById('fileInput').onchange = e => {
-  uploadedFiles = Array.from(e.target.files);
+function addMsg(t,r){const d=document.createElement('div');d.className='message '+r;d.textContent=t;chatContainer.appendChild(d);chatContainer.scrollTop=chatContainer.scrollHeight;return d}
+
+/* API KEY MANAGER */
+let apiKeys=JSON.parse(localStorage.getItem('gomu_api_keys')||'[]');
+const list=document.getElementById('apiKeyList');
+
+function renderKeys(){list.innerHTML='';apiKeys.forEach(k=>{const d=document.createElement('div');d.className='key-item';d.innerHTML=`<span>${k.platform.toUpperCase()} – ${k.name}</span><span class="key-value">${k.key}</span>`;list.appendChild(d);});}
+
+document.getElementById('genKeyBtn').onclick=()=>{
+  const name=document.getElementById('apiKeyName').value.trim();
+  const platform=document.getElementById('apiPlatform').value;
+  if(!name) return alert('Key name required');
+  const prefix={openai:'sk-',anthropic:'sk-ant-',google:'AIza',openrouter:'or-'}[platform]||'key-';
+  const key=prefix+crypto.randomUUID().replace(/-/g,'').slice(0,32);
+  apiKeys.push({name,platform,key,created:Date.now()});
+  localStorage.setItem('gomu_api_keys',JSON.stringify(apiKeys));
+  document.getElementById('apiKeyName').value='';
+  renderKeys();
 };
-
-function addMsg(text, role) {
-  const div = document.createElement('div');
-  div.className = 'message ' + role;
-  div.textContent = text;
-  chatContainer.appendChild(div);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-  return div;
-}
-
-/* ========== IMAGE GENERATOR ========== */
-async function generateImage() {
-  const prompt = document.getElementById('imagePrompt').value.trim();
-  if (!prompt) return;
-  const out = document.getElementById('imageOutput');
-  out.textContent = '⏳ generating image...';
-
-  const img = await puter.ai.image({ prompt });
-  out.innerHTML = `<img src="${img.url}" style="max-width:100%">`;
-}
-
-/* ========== TEXT GENERATOR ========== */
-async function generateText() {
-  const prompt = document.getElementById('textPrompt').value.trim();
-  if (!prompt) return;
-  const out = document.getElementById('textOutput');
-  out.textContent = '⏳ generating...';
-
-  const res = await puter.ai.chat({
-    model: 'gpt-4o-mini',
-    messages: [{ role: 'user', content: prompt }]
-  });
-  out.textContent = res.message.content;
-}
-
-/* ========== CODE GENERATOR ========== */
-async function generateCode() {
-  const prompt = document.getElementById('codePrompt').value.trim();
-  if (!prompt) return;
-  const out = document.getElementById('codeOutput');
-  out.textContent = '⏳ generating code...';
-
-  const res = await puter.ai.chat({
-    model: 'gpt-4o-mini',
-    messages: [{ role: 'user', content: 'Generate code:
-' + prompt }]
-  });
-  out.textContent = res.message.content;
-}
-
-/* ========== TTS (BROWSER NATIVE) ========== */
-function speakText() {
-  const text = document.getElementById('ttsText').value;
-  if (!text) return;
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = document.getElementById('ttsLang').value;
-  speechSynthesis.speak(utter);
-}
-
-/* ========== API KEY MANAGER (LOCAL REAL) ========== */
-let apiKeys = JSON.parse(localStorage.getItem('gomu_api_keys') || '[]');
-const list = document.getElementById('apiKeyList');
-
-function renderKeys() {
-  list.innerHTML = '';
-  apiKeys.forEach(k => {
-    const div = document.createElement('div');
-    div.className = 'key-item';
-    div.innerHTML = `<span>${k.platform.toUpperCase()} – ${k.name}</span><span class="key-value">${k.key}</span>`;
-    list.appendChild(div);
-  });
-}() {
-  list.innerHTML = '';
-  apiKeys.forEach(k => {
-    const div = document.createElement('div');
-    div.className = 'key-item';
-    div.innerHTML = `<span>${k.name}</span><span class="key-value">${k.key}</span>`;
-    list.appendChild(div);
-  });
-}
-
-function generateAPIKey() {
-  const name = document.getElementById('apiKeyName').value.trim();
-  const platform = document.getElementById('apiPlatform').value;
-  if (!name) return alert('Key name required');
-
-  let prefix = {
-    openai: 'sk-',
-    anthropic: 'sk-ant-',
-    google: 'AIza',
-    openrouter: 'or-'
-  }[platform] || 'key-';
-
-  const key = prefix + crypto.randomUUID().replace(/-/g, '').slice(0, 32);
-  apiKeys.push({ name, platform, key, created: Date.now() });
-  localStorage.setItem('gomu_api_keys', JSON.stringify(apiKeys));
-  document.getElementById('apiKeyName').value = '';
-  renderKeys();
-});
-  localStorage.setItem('gomu_api_keys', JSON.stringify(apiKeys));
-  document.getElementById('apiKeyName').value = '';
-  renderKeys();
-}
 
 renderKeys();
 </script></body>
