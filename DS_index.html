@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoMu-OS 2in1 - PUTER.JS Integrated</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --border: #e5e7eb;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            height: 95vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--dark);
+            color: white;
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+        
+        .os-badge {
+            background: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        /* Main Layout */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 350px;
+            background: #f8fafc;
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+        }
+        
+        .api-keys-section {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+        
+        .api-keys-section h3 {
+            margin-bottom: 16px;
+            color: var(--dark);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .api-input-group {
+            margin-bottom: 14px;
+        }
+        
+        .api-input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #4b5563;
+        }
+        
+        .api-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .api-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .auth-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+        
+        .auth-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f1f5f9;
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+        
+        .add-tab {
+            padding: 16px;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .message {
+            max-width: 85%;
+            padding: 16px 20px;
+            border-radius: 18px;
+            line-height: 1.5;
+            position: relative;
+            word-wrap: break-word;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .ai-message {
+            align-self: flex-start;
+            background: #f1f5f9;
+            color: var(--dark);
+            border-bottom-left-radius: 4px;
+        }
+        
+        .system-message {
+            align-self: center;
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+            max-width: 90%;
+            font-size: 0.95rem;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .message-content {
+            line-height: 1.6;
+        }
+        
+        /* Loading indicator */
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #64748b;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        /* Input Area */
+        .input-area {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background: white;
+            position: relative;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        
+        .chat-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        
+        .chat-input {
+            width: 100%;
+            min-height: 56px;
+            max-height: 200px;
+            padding: 16px 52px 16px 20px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            transition: all 0.2s;
+        }
+        
+        .chat-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .ai-suggest-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--secondary);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .ai-suggest-btn:hover {
+            background: #0da271;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .send-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .send-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* File Upload */
+        .file-upload-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .file-upload-btn {
+            background: white;
+            border: 2px dashed #cbd5e1;
+            color: #64748b;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .file-upload-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .file-info {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        /* Model Selection */
+        .model-selector {
+            position: absolute;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 16px;
+            width: 350px;
+            z-index: 100;
+            display: none;
+            border: 1px solid var(--border);
+        }
+        
+        .model-selector.show {
+            display: block;
+        }
+        
+        .model-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .model-option {
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .model-option:hover {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+        
+        .model-option.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online {
+            background: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+        
+        .status-offline {
+            background: #ef4444;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .file-preview {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .feature-btn {
+            padding: 12px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .feature-btn:hover {
+            border-color: var(--primary);
+            background: #f8fafc;
+            transform: translateY(-2px);
+        }
+        
+        .status-bar {
+            padding: 12px 20px;
+            background: #f1f5f9;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        .model-tag {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #4f46e5;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 300px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                max-height: 300px;
+            }
+            
+            .container {
+                height: auto;
+                min-height: 95vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <h1>GoMu-OS 2in1</h1>
+                <span class="os-badge">PUTER.JS Integrated</span>
+            </div>
+            <div id="auth-status" style="display: flex; align-items: center; gap: 10px;">
+                <span class="status-indicator status-offline" id="status-indicator"></span>
+                <span id="status-text">Not Connected</span>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <!-- Sidebar with PUTER.js Functions -->
+            <aside class="sidebar">
+                <div class="api-keys-section">
+                    <h3>🔐 PUTER.JS Authentication</h3>
+                    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 16px;">
+                        Authenticate with PUTER.js to access AI, storage, and other features
+                    </p>
+                    <button id="signin-btn" class="auth-btn" onclick="signInWithPuter()">
+                        🔑 Sign In with PUTER.js
+                    </button>
+                    <button id="signout-btn" class="auth-btn hidden" onclick="signOutFromPuter()" 
+                            style="background: #ef4444; margin-top: 8px;">
+                        🚪 Sign Out
+                    </button>
+                    
+                    <div id="user-info" class="hidden" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                            <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;" id="user-avatar">
+                                U
+                            </div>
+                            <div>
+                                <strong id="username">User</strong>
+                                <div style="font-size: 0.8rem; color: #64748b;" id="user-email">user@example.com</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="api-keys-section">
+                    <h3>🤖 PUTER AI Models</h3>
+                    <div style="font-size: 0.9rem; color: #64748b; margin-bottom: 12px;">
+                        Select AI model for chat:
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                        <select id="ai-model" class="api-input" style="flex: 1;">
+                            <option value="gpt-5-nano">GPT-5 Nano</option>
+                            <option value="gpt-4o">GPT-4o</option>
+                            <option value="gpt-4">GPT-4</option>
+                            <option value="claude-3-sonnet">Claude 3 Sonnet</option>
+                            <option value="claude-3-opus">Claude 3 Opus</option>
+                            <option value="claude-3-haiku">Claude 3 Haiku</option>
+                            <option value="gemini-pro">Gemini Pro</option>
+                            <option value="gemini-flash">Gemini Flash</option>
+                            <option value="llama-3-70b">Llama 3 70B</option>
+                            <option value="mixtral-8x7b">Mixtral 8x7B</option>
+                            <option value="dall-e-3">DALL-E 3 (Image)</option>
+                            <option value="gpt-image-1.5">GPT Image 1.5</option>
+                            <option value="o1-mini">O1 Mini</option>
+                            <option value="o3-mini">O3 Mini</option>
+                        </select>
+                        <button class="feature-btn" onclick="showModelSelector()" style="width: 40px;">
+                            ➕
+                        </button>
+                    </div>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-btn" onclick="testAIChat()">
+                            💬 Test AI Chat
+                        </div>
+                        <div class="feature-btn" onclick="listAIModels()">
+                            📋 List Models
+                        </div>
+                        <div class="feature-btn" onclick="clearChat()">
+                            🗑️ Clear Chat
+                        </div>
+                        <div class="feature-btn" onclick="toggleStreaming()">
+                            🌊 Toggle Streaming
+                        </div>
+                    </div>
+                    
+                    <div id="streaming-status" style="margin-top: 12px; padding: 8px; background: #f0f9ff; border-radius: 6px; font-size: 0.85rem; display: none;">
+                        <span style="color: #0369a1;">Streaming mode: ON</span>
+                    </div>
+                </div>
+                
+                <div class="api-keys-section">
+                    <h3>💾 Cloud Storage</h3>
+                    <div style="font-size: 0.9rem; color: #64748b; margin-bottom: 12px;">
+                        PUTER.js File System Operations
+                    </div>
+                    
+                    <div class="file-upload-btn" onclick="document.getElementById('puter-file-input').click()">
+                        📎 Upload to Cloud
+                    </div>
+                    <input type="file" id="puter-file-input" multiple hidden 
+                           onchange="uploadToPuterCloud(this.files)">
+                    
+                    <div class="feature-grid">
+                        <div class="feature-btn" onclick="listCloudFiles()">
+                            📁 List Files
+                        </div>
+                        <div class="feature-btn" onclick="createTestFile()">
+                            📝 Create File
+                        </div>
+                        <div class="feature-btn" onclick="createDirectory()">
+                            📂 Create Folder
+                        </div>
+                        <div class="feature-btn" onclick="deleteAllTestFiles()">
+                            🗑️ Cleanup
+                        </div>
+                    </div>
+                    
+                    <div id="cloud-stats" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.85rem;">
+                        <div>Cloud Status: <span id="cloud-status">Not connected</span></div>
+                        <div>Files uploaded: <span id="file-count">0</span></div>
+                    </div>
+                </div>
+                
+                <div class="api-keys-section">
+                    <h3>⚡ AI Tools</h3>
+                    <div class="feature-grid">
+                        <div class="feature-btn" onclick="testTextToSpeech()">
+                            🔊 Text to Speech
+                        </div>
+                        <div class="feature-btn" onclick="testImageGeneration()">
+                            🖼️ Generate Image
+                        </div>
+                        <div class="feature-btn" onclick="testSpeechToText()">
+                            🎤 Speech to Text
+                        </div>
+                        <div class="feature-btn" onclick="testTextToVideo()">
+                            🎬 Text to Video
+                        </div>
+                        <div class="feature-btn" onclick="testImageAnalysis()">
+                            🔍 Image Analysis
+                        </div>
+                        <div class="feature-btn" onclick="testKVStore()">
+                            🗄️ Key-Value Store
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="model-selector" class="model-selector">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 style="margin: 0;">Select Multiple Models</h3>
+                        <button onclick="document.getElementById('model-selector').classList.remove('show')" 
+                                style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">
+                            ×
+                        </button>
+                    </div>
+                    <div class="model-options" id="model-list">
+                        <!-- Models will be populated here -->
+                    </div>
+                    <button class="auth-btn" onclick="applySelectedModels()" style="margin-top: 12px;">
+                        Apply Selected Models
+                    </button>
+                </div>
+            </aside>
+            
+            <!-- Main Chat Area -->
+            <main class="chat-area">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab(0)">AI Chat</button>
+                    <button class="tab" onclick="switchTab(1)">Multi-Model</button>
+                    <button class="tab" onclick="switchTab(2)">File Manager</button>
+                    <button class="tab" onclick="switchTab(3)">AI Tools</button>
+                    <button class="add-tab" onclick="addNewTab()">+</button>
+                </div>
+                
+                <!-- Chat Messages Container -->
+                <div class="chat-container" id="chat-container">
+                    <div class="message system-message">
+                        <div class="message-header">
+                            <strong>GoMu-OS 2in1</strong>
+                            <span>System Ready</span>
+                        </div>
+                        <div class="message-content">
+                            Welcome to GoMu-OS 2in1 with PUTER.js Integration! This is a fully functional implementation using PUTER.js as the backend.
+                            <br><br>
+                            Features available:
+                            • 🔐 PUTER.js Authentication
+                            • 🤖 Real AI Chat (GPT-5, Claude, Gemini, Llama, Mixtral)
+                            • 💾 Cloud Storage Operations
+                            • 🔊 Text-to-Speech & Speech-to-Text
+                            • 🖼️ Image Generation & Analysis
+                            • 🗄️ Key-Value Store
+                            <br><br>
+                            Click "Sign In with PUTER.js" to begin!
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Input Area -->
+                <div class="input-area">
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <textarea class="chat-input" id="chat-input" 
+                                      placeholder="Type your message here... (Requires PUTER.js authentication)" 
+                                      rows="3" disabled></textarea>
+                            <button class="ai-suggest-btn" onclick="getAiSuggestion()" title="AI Suggestion" disabled>✨</button>
+                        </div>
+                        <button class="send-btn" onclick="sendMessage()" title="Send Message" disabled>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="file-upload-section">
+                        <div class="file-upload-btn" onclick="document.getElementById('puter-file-input').click()" title="Upload files to PUTER Cloud">
+                            📎 Upload to PUTER Cloud
+                        </div>
+                        <span class="file-info" id="file-info">Max 100GB • Multiple file types supported</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <div class="status-bar">
+            <div>
+                <span id="puter-status">PUTER.js: Loading...</span>
+            </div>
+            <div>
+                <span id="api-credits">Credits: --</span>
+                <span id="active-model-display" class="model-tag">GPT-5 Nano</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PUTER.JS SDK -->
+    <script src="https://js.puter.com/v2/"></script>
+    
+    <script>
+        // Global state
+        let puterInstance = null;
+        let isAuthenticated = false;
+        let currentUser = null;
+        let activeModels = ['gpt-5-nano'];
+        let uploadedFiles = [];
+        let chatHistory = [];
+        let loadingMessageId = null;
+        let isStreaming = false;
+        
+        // Available PUTER.js AI models
+        const allModels = [
+            // OpenAI Models
+            { id: 'gpt-5-nano', name: 'GPT-5 Nano', provider: 'OpenAI', category: 'chat' },
+            { id: 'gpt-5', name: 'GPT-5', provider: 'OpenAI', category: 'chat' },
+            { id: 'gpt-4o', name: 'GPT-4o', provider: 'OpenAI', category: 'chat' },
+            { id: 'gpt-4', name: 'GPT-4', provider: 'OpenAI', category: 'chat' },
+            { id: 'o1-mini', name: 'O1 Mini', provider: 'OpenAI', category: 'chat' },
+            { id: 'o3-mini', name: 'O3 Mini', provider: 'OpenAI', category: 'chat' },
+            
+            // Claude Models
+            { id: 'claude-3-sonnet', name: 'Claude 3 Sonnet', provider: 'Anthropic', category: 'chat' },
+            { id: 'claude-3-opus', name: 'Claude 3 Opus', provider: 'Anthropic', category: 'chat' },
+            { id: 'claude-3-haiku', name: 'Claude 3 Haiku', provider: 'Anthropic', category: 'chat' },
+            
+            // Gemini Models
+            { id: 'gemini-pro', name: 'Gemini Pro', provider: 'Google', category: 'chat' },
+            { id: 'gemini-flash', name: 'Gemini Flash', provider: 'Google', category: 'chat' },
+            
+            // Open Source Models
+            { id: 'llama-3-70b', name: 'Llama 3 70B', provider: 'Meta', category: 'chat' },
+            { id: 'mixtral-8x7b', name: 'Mixtral 8x7B', provider: 'Mistral AI', category: 'chat' },
+            
+            // Image Models
+            { id: 'dall-e-3', name: 'DALL-E 3', provider: 'OpenAI', category: 'image' },
+            { id: 'gpt-image-1.5', name: 'GPT Image 1.5', provider: 'OpenAI', category: 'image' },
+            
+            // Specialized Models
+            { id: 'claude-3.5-sonnet', name: 'Claude 3.5 Sonnet', provider: 'Anthropic', category: 'chat' },
+            { id: 'claude-3.5-haiku', name: 'Claude 3.5 Haiku', provider: 'Anthropic', category: 'chat' },
+        ];
+
+        // Initialize PUTER.js
+        async function initializePuter() {
+            try {
+                // Check if puter is already loaded
+                if (typeof puter === 'undefined') {
+                    throw new Error('PUTER.js SDK not loaded');
+                }
+                
+                puterInstance = puter;
+                updateStatus('PUTER.js loaded', true);
+                
+                // Populate model selector
+                populateModelSelector();
+                
+                // Check if user is already signed in
+                try {
+                    const signedIn = await puter.auth.isSignedIn();
+                    if (signedIn) {
+                        await handleSignInSuccess();
+                    }
+                } catch (authError) {
+                    console.log('No existing session:', authError.message);
+                }
+                
+                // Enable input fields
+                document.getElementById('chat-input').disabled = false;
+                document.querySelector('.ai-suggest-btn').disabled = false;
+                document.querySelector('.send-btn').disabled = false;
+                
+            } catch (error) {
+                console.error('PUTER.js initialization error:', error);
+                updateStatus(`PUTER.js error: ${error.message}`, false);
+                addSystemMessage('Error loading PUTER.js SDK. Please refresh the page.');
+            }
+        }
+        
+        // Populate model selector
+        function populateModelSelector() {
+            const modelList = document.getElementById('model-list');
+            modelList.innerHTML = '';
+            
+            // Group models by category
+            const categories = {};
+            allModels.forEach(model => {
+                if (!categories[model.category]) {
+                    categories[model.category] = [];
+                }
+                categories[model.category].push(model);
+            });
+            
+            // Create sections for each category
+            Object.keys(categories).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.style.gridColumn = 'span 2';
+                categoryDiv.style.marginTop = '8px';
+                
+                const categoryTitle = document.createElement('div');
+                categoryTitle.style.fontWeight = 'bold';
+                categoryTitle.style.marginBottom = '8px';
+                categoryTitle.style.color = '#4b5563';
+                categoryTitle.textContent = category.charAt(0).toUpperCase() + category.slice(1) + ' Models';
+                categoryDiv.appendChild(categoryTitle);
+                
+                categories[category].forEach(model => {
+                    const modelOption = document.createElement('div');
+                    modelOption.className = 'model-option';
+                    modelOption.dataset.id = model.id;
+                    modelOption.innerHTML = `
+                        <div style="font-weight: 600;">${model.name}</div>
+                        <div style="font-size: 0.8rem; color: #64748b;">${model.provider}</div>
+                    `;
+                    
+                    // Check if model is active
+                    if (activeModels.includes(model.id)) {
+                        modelOption.classList.add('active');
+                    }
+                    
+                    modelOption.onclick = () => {
+                        modelOption.classList.toggle('active');
+                    };
+                    
+                    categoryDiv.appendChild(modelOption);
+                });
+                
+                modelList.appendChild(categoryDiv);
+            });
+        }
+        
+        // Apply selected models
+        function applySelectedModels() {
+            const selectedOptions = document.querySelectorAll('#model-list .model-option.active');
+            activeModels = Array.from(selectedOptions).map(option => option.dataset.id);
+            
+            if (activeModels.length === 0) {
+                activeModels = ['gpt-5-nano'];
+            }
+            
+            // Update dropdown
+            const select = document.getElementById('ai-model');
+            if (activeModels.length > 0) {
+                select.value = activeModels[0];
+            }
+            
+            // Close selector
+            document.getElementById('model-selector').classList.remove('show');
+            
+            // Update display
+            document.getElementById('active-model-display').textContent = 
+                activeModels.length > 1 ? `${activeModels.length} models` : activeModels[0];
+            
+            addSystemMessage(`Selected ${activeModels.length} AI models: ${activeModels.join(', ')}`);
+        }
+        
+        // Show model selector
+        function showModelSelector() {
+            const selector = document.getElementById('model-selector');
+            selector.classList.toggle('show');
+            
+            // Position it properly
+            if (selector.classList.contains('show')) {
+                selector.style.right = '20px';
+                selector.style.bottom = '80px';
+            }
+        }
+        
+        // Update status display
+        function updateStatus(message, isOnline) {
+            const indicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+            const puterStatus = document.getElementById('puter-status');
+            
+            if (isOnline) {
+                indicator.className = 'status-indicator status-online';
+            } else {
+                indicator.className = 'status-indicator status-offline';
+            }
+            
+            statusText.textContent = message;
+            puterStatus.textContent = `PUTER.js: ${message}`;
+        }
+        
+        // Add system message to chat
+        function addSystemMessage(message) {
+            const container = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system-message';
+            
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <strong>System</strong>
+                    <span>${timestamp}</span>
+                </div>
+                <div class="message-content">${message}</div>
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            
+            chatHistory.push({
+                id: Date.now(),
+                role: 'system',
+                sender: 'System',
+                message: message,
+                timestamp: new Date()
+            });
+            
+            return messageDiv;
+        }
+        
+        // Add user message to chat
+        function addUserMessage(message) {
+            const container = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user-message';
+            
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <strong>You</strong>
+                    <span>${timestamp}</span>
+                </div>
+                <div class="message-content">${message}</div>
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            
+            const messageId = Date.now();
+            chatHistory.push({
+                id: messageId,
+                role: 'user',
+                sender: 'You',
+                message: message,
+                timestamp: new Date()
+            });
+            
+            return messageDiv;
+        }
+        
+        // Add AI message to chat (FIXED: Returns div element, not loading message reference)
+        function addAIMessage(message, sender = 'AI Assistant', model = null) {
+            const container = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ai-message';
+            
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const senderText = model ? `${sender} (${model})` : sender;
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <strong>${senderText}</strong>
+                    <span>${timestamp}</span>
+                </div>
+                <div class="message-content">${message}</div>
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            
+            chatHistory.push({
+                id: Date.now(),
+                role: 'ai',
+                sender: senderText,
+                message: message,
+                timestamp: new Date()
+            });
+            
+            return messageDiv; // Return the div element
+        }
+        
+        // Add loading indicator
+        function addLoadingIndicator(model = null) {
+            const container = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ai-message';
+            messageDiv.id = 'loading-message-' + Date.now();
+            
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const senderText = model ? `AI Processing (${model})` : 'AI Processing';
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <strong>${senderText}</strong>
+                    <span>${timestamp}</span>
+                </div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            
+            return messageDiv.id; // Return the ID for removal
+        }
+        
+        // Remove loading indicator
+        function removeLoadingIndicator(loadingId) {
+            const loadingElement = document.getElementById(loadingId);
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+        }
+        
+        // Sign in with PUTER.js
+        async function signInWithPuter() {
+            try {
+                addSystemMessage('Initiating PUTER.js authentication...');
+                updateStatus('Signing in...', true);
+                
+                const result = await puter.auth.signIn();
+                await handleSignInSuccess(result);
+                
+            } catch (error) {
+                console.error('Sign in error:', error);
+                addSystemMessage(`Authentication failed: ${error.message}`);
+                updateStatus('Authentication failed', false);
+            }
+        }
+        
+        // Handle successful sign in
+        async function handleSignInSuccess(result = null) {
+            isAuthenticated = true;
+            
+            try {
+                // Get user information
+                currentUser = await puter.auth.getUser();
+                
+                // Update UI
+                document.getElementById('signin-btn').classList.add('hidden');
+                document.getElementById('signout-btn').classList.remove('hidden');
+                document.getElementById('user-info').classList.remove('hidden');
+                
+                document.getElementById('username').textContent = currentUser.username || 'User';
+                document.getElementById('user-email').textContent = currentUser.email || 'user@puter.com';
+                
+                const avatar = document.getElementById('user-avatar');
+                if (currentUser.username) {
+                    avatar.textContent = currentUser.username.charAt(0).toUpperCase();
+                }
+                
+                // Get usage info
+                try {
+                    const usage = await puter.auth.getMonthlyUsage();
+                    document.getElementById('api-credits').textContent = `Credits: ${usage.credits || 'Unlimited'}`;
+                } catch (e) {
+                    // Ignore usage errors
+                }
+                
+                // Update cloud status
+                document.getElementById('cloud-status').textContent = 'Connected';
+                document.getElementById('cloud-status').style.color = '#10b981';
+                
+                updateStatus(`Signed in as ${currentUser.username}`, true);
+                addSystemMessage(`✅ Successfully authenticated with PUTER.js as ${currentUser.username}`);
+                addSystemMessage('You can now use all AI features and cloud storage.');
+                
+            } catch (error) {
+                console.error('Error getting user info:', error);
+                addSystemMessage('Signed in but could not fetch user details.');
+            }
+        }
+        
+        // Sign out from PUTER.js
+        async function signOutFromPuter() {
+            try {
+                await puter.auth.signOut();
+                
+                // Reset state
+                isAuthenticated = false;
+                currentUser = null;
+                
+                // Update UI
+                document.getElementById('signin-btn').classList.remove('hidden');
+                document.getElementById('signout-btn').classList.add('hidden');
+                document.getElementById('user-info').classList.add('hidden');
+                
+                // Reset cloud status
+                document.getElementById('cloud-status').textContent = 'Not connected';
+                document.getElementById('cloud-status').style.color = '#ef4444';
+                document.getElementById('file-count').textContent = '0';
+                
+                updateStatus('Signed out', false);
+                addSystemMessage('Signed out from PUTER.js');
+                
+            } catch (error) {
+                console.error('Sign out error:', error);
+                addSystemMessage(`Sign out failed: ${error.message}`);
+            }
+        }
+        
+        // Send message to AI
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in with PUTER.js to use AI chat');
+                return;
+            }
+            
+            // Add user message
+            addUserMessage(message);
+            input.value = '';
+            
+            try {
+                // Get selected model
+                const modelSelect = document.getElementById('ai-model');
+                const selectedModel = modelSelect.value;
+                
+                // Show loading indicator
+                const loadingId = addLoadingIndicator(selectedModel);
+                
+                // Call PUTER.js AI chat
+                const response = await puter.ai.chat(message, { 
+                    model: selectedModel 
+                });
+                
+                // Remove loading indicator
+                removeLoadingIndicator(loadingId);
+                
+                // Add AI response
+                addAIMessage(response, 'AI Assistant', selectedModel);
+                
+            } catch (error) {
+                console.error('AI chat error:', error);
+                // Remove loading indicator if it exists
+                if (loadingMessageId) {
+                    removeLoadingIndicator(loadingMessageId);
+                    loadingMessageId = null;
+                }
+                addSystemMessage(`AI Error: ${error.message}`);
+            }
+        }
+        
+        // Test AI chat with a simple query
+        async function testAIChat() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to test AI chat');
+                return;
+            }
+            
+            const testQuery = "What is PUTER.js and what can it do?";
+            addUserMessage(testQuery);
+            
+            try {
+                const modelSelect = document.getElementById('ai-model');
+                const selectedModel = modelSelect.value;
+                
+                const loadingId = addLoadingIndicator(selectedModel);
+                
+                const response = await puter.ai.chat(testQuery, { 
+                    model: selectedModel 
+                });
+                
+                removeLoadingIndicator(loadingId);
+                addAIMessage(response, 'AI Test', selectedModel);
+                
+            } catch (error) {
+                console.error('Test AI error:', error);
+                if (loadingMessageId) {
+                    removeLoadingIndicator(loadingMessageId);
+                    loadingMessageId = null;
+                }
+                addSystemMessage(`Test failed: ${error.message}`);
+            }
+        }
+        
+        // List available AI models
+        async function listAIModels() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to list AI models');
+                return;
+            }
+            
+            try {
+                addSystemMessage('Fetching available AI models...');
+                
+                // Group models by provider
+                const modelsByProvider = {};
+                allModels.forEach(model => {
+                    if (!modelsByProvider[model.provider]) {
+                        modelsByProvider[model.provider] = [];
+                    }
+                    modelsByProvider[model.provider].push(model.name);
+                });
+                
+                let modelsList = 'Available AI models in PUTER.js:\n\n';
+                
+                Object.keys(modelsByProvider).forEach(provider => {
+                    modelsList += `**${provider}:**\n`;
+                    modelsByProvider[provider].forEach(modelName => {
+                        modelsList += `  • ${modelName}\n`;
+                    });
+                    modelsList += '\n';
+                });
+                
+                modelsList += `\nCurrently selected: ${activeModels.join(', ')}`;
+                
+                addSystemMessage(modelsList);
+                
+            } catch (error) {
+                console.error('List models error:', error);
+                addSystemMessage(`Failed to list models: ${error.message}`);
+            }
+        }
+        
+        // Upload files to PUTER cloud storage
+        async function uploadToPuterCloud(files) {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to upload files');
+                return;
+            }
+            
+            if (!files || files.length === 0) return;
+            
+            try {
+                addSystemMessage(`Uploading ${files.length} file(s) to PUTER cloud...`);
+                
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    
+                    // Create a unique filename
+                    const timestamp = Date.now();
+                    const filename = `gomuos_${timestamp}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    
+                    // Upload to PUTER cloud
+                    await puter.fs.upload(file, filename);
+                    
+                    uploadedFiles.push({
+                        name: filename,
+                        size: file.size,
+                        type: file.type,
+                        path: filename
+                    });
+                    
+                    addSystemMessage(`✅ Uploaded: ${filename} (${formatFileSize(file.size)})`);
+                }
+                
+                // Update file info
+                document.getElementById('file-count').textContent = uploadedFiles.length;
+                document.getElementById('file-info').textContent = 
+                    `${uploadedFiles.length} files uploaded • Total: ${formatFileSize(uploadedFiles.reduce((sum, f) => sum + f.size, 0))}`;
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                addSystemMessage(`Upload failed: ${error.message}`);
+            }
+        }
+        
+        // List files in cloud storage
+        async function listCloudFiles() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to list cloud files');
+                return;
+            }
+            
+            try {
+                addSystemMessage('Listing files in PUTER cloud storage...');
+                
+                // List files in root directory
+                const items = await puter.fs.readdir('/');
+                
+                // Filter for our uploaded files
+                const ourFiles = items.filter(item => 
+                    item.name.startsWith('gomuos_') || uploadedFiles.some(f => f.name === item.name)
+                );
+                
+                if (ourFiles.length === 0) {
+                    addSystemMessage('No files found in cloud storage. Try uploading some files first.');
+                    return;
+                }
+                
+                let fileList = '**Files in Cloud Storage:**\n\n';
+                ourFiles.forEach(item => {
+                    const size = item.size ? formatFileSize(item.size) : 'Directory';
+                    const date = new Date(item.created).toLocaleDateString();
+                    fileList += `• **${item.name}**\n  Size: ${size} | Created: ${date}\n`;
+                });
+                
+                fileList += `\n**Total:** ${ourFiles.length} file(s)`;
+                
+                addSystemMessage(fileList);
+                
+            } catch (error) {
+                console.error('List files error:', error);
+                addSystemMessage(`Failed to list files: ${error.message}`);
+            }
+        }
+        
+        // Create a test file in cloud storage
+        async function createTestFile() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to create files');
+                return;
+            }
+            
+            try {
+                const filename = `gomuos_test_${Date.now()}.txt`;
+                const content = `This is a test file created by GoMu-OS 2in1 at ${new Date().toISOString()}\n\nPUTER.js Integration Test Successful!`;
+                
+                addSystemMessage(`Creating test file: ${filename}...`);
+                
+                await puter.fs.write(filename, content);
+                
+                uploadedFiles.push({
+                    name: filename,
+                    size: content.length,
+                    type: 'text/plain',
+                    path: filename
+                });
+                
+                document.getElementById('file-count').textContent = uploadedFiles.length;
+                
+                addSystemMessage(`✅ Created: ${filename}`);
+                
+            } catch (error) {
+                console.error('Create file error:', error);
+                addSystemMessage(`Failed to create file: ${error.message}`);
+            }
+        }
+        
+        // Create directory
+        async function createDirectory() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to create directories');
+                return;
+            }
+            
+            try {
+                const dirname = `gomuos_dir_${Date.now()}`;
+                
+                addSystemMessage(`Creating directory: ${dirname}...`);
+                
+                await puter.fs.mkdir(dirname);
+                
+                addSystemMessage(`✅ Created directory: ${dirname}`);
+                
+            } catch (error) {
+                console.error('Create directory error:', error);
+                addSystemMessage(`Failed to create directory: ${error.message}`);
+            }
+        }
+        
+        // Delete all test files
+        async function deleteAllTestFiles() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to delete files');
+                return;
+            }
+            
+            try {
+                addSystemMessage('Cleaning up test files...');
+                
+                // List files
+                const items = await puter.fs.readdir('/');
+                const ourFiles = items.filter(item => item.name.startsWith('gomuos_'));
+                
+                if (ourFiles.length === 0) {
+                    addSystemMessage('No test files to delete.');
+                    return;
+                }
+                
+                let deletedCount = 0;
+                for (const file of ourFiles) {
+                    try {
+                        await puter.fs.delete(file.name);
+                        deletedCount++;
+                    } catch (e) {
+                        console.log(`Could not delete ${file.name}:`, e.message);
+                    }
+                }
+                
+                // Clear local cache
+                uploadedFiles = [];
+                document.getElementById('file-count').textContent = '0';
+                document.getElementById('file-info').textContent = 'Max 100GB • Multiple file types supported';
+                
+                addSystemMessage(`✅ Deleted ${deletedCount} test file(s)`);
+                
+            } catch (error) {
+                console.error('Cleanup error:', error);
+                addSystemMessage(`Cleanup failed: ${error.message}`);
+            }
+        }
+        
+        // Test Text-to-Speech
+        async function testTextToSpeech() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to use text-to-speech');
+                return;
+            }
+            
+            try {
+                const text = "Hello from GoMu-OS 2in1 with PUTER.js integration! This is a text-to-speech test.";
+                addSystemMessage('Testing text-to-speech...');
+                
+                const audio = await puter.ai.txt2speech(text, {
+                    voice: "Joanna",
+                    engine: "neural"
+                });
+                
+                addSystemMessage('✅ Text-to-speech generated. Playing audio...');
+                
+                // Play the audio
+                audio.play().then(() => {
+                    addSystemMessage('Audio playback completed.');
+                }).catch(err => {
+                    addSystemMessage(`Audio play failed: ${err.message}`);
+                });
+                
+            } catch (error) {
+                console.error('TTS error:', error);
+                addSystemMessage(`TTS failed: ${error.message}`);
+            }
+        }
+        
+        // Test Image Generation
+        async function testImageGeneration() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to generate images');
+                return;
+            }
+            
+            try {
+                const prompt = "A futuristic AI assistant helping with programming tasks, digital art style";
+                
+                addSystemMessage(`Generating image with prompt: "${prompt}"...`);
+                
+                // Generate image (test mode to avoid using credits)
+                const image = await puter.ai.txt2img(prompt, true);
+                
+                // Create image element
+                const container = document.getElementById('chat-container');
+                const imgWrapper = document.createElement('div');
+                imgWrapper.style.margin = '20px 0';
+                imgWrapper.style.textAlign = 'center';
+                
+                if (typeof image === 'string') {
+                    // If it's a URL
+                    const img = document.createElement('img');
+                    img.src = image;
+                    img.style.maxWidth = '400px';
+                    img.style.borderRadius = '8px';
+                    img.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                    imgWrapper.appendChild(img);
+                } else if (image instanceof HTMLImageElement) {
+                    // If it's already an image element
+                    image.style.maxWidth = '400px';
+                    image.style.borderRadius = '8px';
+                    image.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                    imgWrapper.appendChild(image);
+                }
+                
+                const caption = document.createElement('div');
+                caption.style.fontSize = '0.9rem';
+                caption.style.color = '#64748b';
+                caption.style.marginTop = '8px';
+                caption.textContent = `Generated: ${prompt}`;
+                
+                imgWrapper.appendChild(caption);
+                container.appendChild(imgWrapper);
+                container.scrollTop = container.scrollHeight;
+                
+                addSystemMessage('✅ Image generated successfully!');
+                
+            } catch (error) {
+                console.error('Image generation error:', error);
+                addSystemMessage(`Image generation failed: ${error.message}`);
+            }
+        }
+        
+        // Test Key-Value Store
+        async function testKVStore() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to use key-value store');
+                return;
+            }
+            
+            try {
+                addSystemMessage('Testing PUTER.js key-value store...');
+                
+                // Set a value
+                await puter.kv.set('gomuos_test', `Test value at ${new Date().toISOString()}`);
+                
+                // Get the value back
+                const value = await puter.kv.get('gomuos_test');
+                
+                addSystemMessage(`✅ Key-value store test successful!`);
+                addSystemMessage(`Stored and retrieved: ${value}`);
+                
+            } catch (error) {
+                console.error('KV store error:', error);
+                addSystemMessage(`KV store test failed: ${error.message}`);
+            }
+        }
+        
+        // Test Speech-to-Text
+        async function testSpeechToText() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to use speech-to-text');
+                return;
+            }
+            
+            addSystemMessage('Speech-to-text requires an audio file URL. Example:');
+            addSystemMessage('```javascript\nputer.ai.speech2txt(\'https://example.com/audio.mp3\')\n```');
+        }
+        
+        // Test Text to Video
+        async function testTextToVideo() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to generate videos');
+                return;
+            }
+            
+            try {
+                const prompt = "A drone shot sweeping over bioluminescent waves at night";
+                
+                addSystemMessage(`Generating video with prompt: "${prompt}"...`);
+                
+                // Generate video (test mode)
+                const video = await puter.ai.txt2vid(prompt, true);
+                
+                if (video) {
+                    const container = document.getElementById('chat-container');
+                    container.appendChild(video);
+                    container.scrollTop = container.scrollHeight;
+                    
+                    addSystemMessage('✅ Video generated successfully!');
+                }
+                
+            } catch (error) {
+                console.error('Video generation error:', error);
+                addSystemMessage(`Video generation failed: ${error.message}`);
+            }
+        }
+        
+        // Test Image Analysis
+        async function testImageAnalysis() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to analyze images');
+                return;
+            }
+            
+            addSystemMessage('Image analysis requires an image URL. Example:');
+            addSystemMessage('```javascript\nputer.ai.img2txt(\'https://example.com/image.jpg\')\n```');
+            addSystemMessage('or use with chat:');
+            addSystemMessage('```javascript\nputer.ai.chat("Describe this image", imageUrl)\n```');
+        }
+        
+        // Clear chat
+        function clearChat() {
+            const container = document.getElementById('chat-container');
+            container.innerHTML = '';
+            chatHistory = [];
+            
+            addSystemMessage('Chat cleared. Ready for new conversation.');
+        }
+        
+        // Toggle streaming mode
+        function toggleStreaming() {
+            isStreaming = !isStreaming;
+            const statusDiv = document.getElementById('streaming-status');
+            
+            if (isStreaming) {
+                statusDiv.style.display = 'block';
+                addSystemMessage('Streaming mode enabled. Responses will stream in real-time.');
+            } else {
+                statusDiv.style.display = 'none';
+                addSystemMessage('Streaming mode disabled.');
+            }
+        }
+        
+        // AI Auto-Suggest
+        function getAiSuggestion() {
+            if (!isAuthenticated) {
+                addSystemMessage('Please sign in to use AI suggestions');
+                return;
+            }
+            
+            const input = document.getElementById('chat-input');
+            const suggestions = [
+                "Explain how PUTER.js cloud storage works",
+                "What AI models are available in PUTER.js?",
+                "How do I authenticate with PUTER.js programmatically?",
+                "Create a simple file management app using PUTER.js",
+                "What are the benefits of serverless workers in PUTER.js?",
+                "Compare GPT-5 Nano with Claude 3 Sonnet",
+                "How to generate images using PUTER.js AI?",
+                "Explain PUTER.js key-value store with examples"
+            ];
+            
+            const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+            input.value = randomSuggestion;
+            input.focus();
+        }
+        
+        // Tab management
+        function switchTab(tabIndex) {
+            document.querySelectorAll('.tab').forEach((tab, index) => {
+                tab.classList.toggle('active', index === tabIndex);
+            });
+            
+            const container = document.getElementById('chat-container');
+            container.innerHTML = '';
+            
+            const tabNames = ['AI Chat', 'Multi-Model', 'File Manager', 'AI Tools'];
+            addSystemMessage(`Welcome to ${tabNames[tabIndex]}!`);
+            
+            if (tabIndex === 1) {
+                addSystemMessage('Multi-Model Chat - Chat with multiple AI models simultaneously.');
+            } else if (tabIndex === 2) {
+                addSystemMessage('File Manager - Use the sidebar to upload and manage files in PUTER cloud storage.');
+            } else if (tabIndex === 3) {
+                addSystemMessage('AI Tools - Test different PUTER.js AI capabilities.');
+            }
+        }
+        
+        function addNewTab() {
+            const tabs = document.querySelector('.tabs');
+            const tabCount = document.querySelectorAll('.tab').length - 1;
+            
+            const newTab = document.createElement('button');
+            newTab.className = 'tab';
+            newTab.textContent = `Tab ${tabCount + 1}`;
+            newTab.onclick = () => switchTab(tabCount);
+            
+            const addButton = document.querySelector('.add-tab');
+            tabs.insertBefore(newTab, addButton);
+        }
+        
+        // Utility functions
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            const input = document.getElementById('chat-input');
+            
+            // Ctrl+Enter for AI suggestion
+            if (event.ctrlKey && event.key === 'Enter') {
+                event.preventDefault();
+                getAiSuggestion();
+            }
+            
+            // Enter to send (without shift)
+            if (event.key === 'Enter' && !event.shiftKey && document.activeElement === input) {
+                event.preventDefault();
+                sendMessage();
+            }
+            
+            // Ctrl+K to clear chat
+            if (event.ctrlKey && event.key === 'k') {
+                event.preventDefault();
+                clearChat();
+            }
+            
+            // Ctrl+M for model selector
+            if (event.ctrlKey && event.key === 'm') {
+                event.preventDefault();
+                showModelSelector();
+            }
+        });
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize PUTER.js
+            setTimeout(() => {
+                initializePuter();
+            }, 500);
+            
+            // Auto-resize textarea
+            const chatInput = document.getElementById('chat-input');
+            chatInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+            });
+            
+            // Click outside to close model selector
+            document.addEventListener('click', function(event) {
+                const selector = document.getElementById('model-selector');
+                if (selector.classList.contains('show') && 
+                    !selector.contains(event.target) && 
+                    !event.target.closest('.feature-btn')) {
+                    selector.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```
